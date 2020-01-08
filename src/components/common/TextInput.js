@@ -1,0 +1,33 @@
+import React from "react";
+import PropType from "prop-types";
+function TextInput(props) {
+  let wrapperClass = "form-group";
+  if (props.error.length > 0) {
+    wrapperClass += " has-error";
+  }
+
+  return (
+    <div className={wrapperClass}>
+      <label htmlFor={props.id}>{props.label}</label>
+      <div className='field'>
+        <input id={props.id} type='text' name={props.name} className='form-control' onChange={props.onChange} value={props.title} />
+      </div>
+      {props.error && <div className='alert alert-danger'>{props.error}</div>}
+    </div>
+  );
+}
+
+TextInput.propTypes = {
+  id: PropType.string.isRequired,
+  name: PropType.string.isRequired,
+  label: PropType.string.isRequired,
+  onChange: PropType.func.isRequired,
+  value: PropType.string,
+  error: PropType.string,
+};
+
+TextInput.defaultProps = {
+  error: "",
+};
+
+export default TextInput;
