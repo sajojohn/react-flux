@@ -2,6 +2,7 @@ import React from "react";
 import TextInput from "./common/TextInput";
 import PropType from "prop-types";
 function CourseForm(props) {
+  console.log("props receieved ", props);
   return (
     <form onSubmit={props.onSubmit}>
       <TextInput id='title' label='Title' error={props.errors.title} name='title' onChange={props.onChange} value={props.course.title} />

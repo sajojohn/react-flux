@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import CourseForm from "./CourseForm";
 import * as courseApi from "../api/courseApi";
@@ -14,6 +14,16 @@ const ManageCoursePage = (props) => {
     category: "",
   });
 
+  useEffect(() => {
+    const slug = props.match.params.slug;
+    console.log("slug is ", slug);
+    if (slug) {
+      courseApi.getCourseBySlug(slug).then((_course) => {
+        console.log("course received ", _course);
+        setCourse(_course);
+      });
+    }
+  }, [props.match.params.slug]);
   function handleChange({ target }) {
     // destructuring the event get event.target object
     const updatedCourse = { ...course, [target.name]: target.value }; // target object contain name and value properties.
