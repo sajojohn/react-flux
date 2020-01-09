@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-
+import courseStore from "../stores/CourseStore";
+import * as courseAction from "../actions/courseActions";
 import CourseForm from "./CourseForm";
-import * as courseApi from "../api/courseApi";
+
 import { toast } from "react-toastify";
 
 const ManageCoursePage = (props) => {
@@ -13,17 +14,23 @@ const ManageCoursePage = (props) => {
     authorId: null,
     category: "",
   });
+  const [courses, setCourses] = useState(courseStore.getCourses());
 
   useEffect(() => {
+    courseStore.addChangeListener(onChange);
     const slug = props.match.params.slug;
     console.log("slug is ", slug);
-    if (slug) {
-      courseApi.getCourseBySlug(slug).then((_course) => {
-        console.log("course received ", _course);
-        setCourse(_course);
-      });
+    if (courses.length === 0) {
+      courseAction.loadCourses();
+    } else if (slug) {
+      setCourse(courseStore.getCourseBySlug(slug));
     }
-  }, [props.match.params.slug]);
+    return () => courseStore.removeChangeListener(onChange);
+  }, [props.match.params.slug, courses.length]); // the order of dependency array is impotant
+
+  function onChange() {
+    setCourses(courseStore.getCourses());
+  }
   function handleChange({ target }) {
     // destructuring the event get event.target object
     const updatedCourse = { ...course, [target.name]: target.value }; // target object contain name and value properties.
@@ -43,7 +50,8 @@ const ManageCoursePage = (props) => {
   function handleSubmit(event) {
     event.preventDefault();
     if (!formIsValid()) return;
-    courseApi.saveCourse(course).then(() => {
+
+    courseAction.saveCourse(course).then(() => {
       props.history.push("/courses");
       toast.success("Course Saved.");
     });
