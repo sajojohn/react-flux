@@ -43,6 +43,10 @@ Dispatcher.register((action) => {
       _courses = _courses.map((course) => (course.id === action.course.id ? action.course : course));
       store.emitChange();
       break;
+    case actionTypes.DELETE_COURSE:
+      _courses = _courses.filter((course) => course.id !== action.id);
+      store.emitChange();
+      break;
     default:
     // nothing to do
   }
